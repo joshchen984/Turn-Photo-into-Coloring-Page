@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{%block body%}
+<div class = "row">
+    <div class = "col-lg-4">
+        <form action = "/get-edges" method = "POST" enctype = "multipart/form-data" id = "img-upload">
+            <div class = "form-group">
+                <label for = "img-file">Upload Image: </label>
+                <input type = 'file' name = "image" id = "img-file">
+            </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+    </div>
+
+</div>
+{%endblock%}
