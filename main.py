@@ -25,16 +25,26 @@ def home():
     return render_template('index.html')
 
 
-@app.route('/get-edges', methods=["POST"])
-def get_edges():
+def get_edges(img):
+    blur = cv2.bilateralFilter(img, 9, 100, 100)
+    img_gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
+
+    edges = cv2.Laplacian(img_gray, cv2.CV_16S, ksize=3)
+
+    edges = cv2.convertScaleAbs(edges)
+    return edges
+
+
+@app.route('/find-edges', methods=["POST"])
+def find_edges():
     img_file = request.files['image']
     memory_file = io.BytesIO()
     img_file.save(memory_file)
     img_data = np.frombuffer(memory_file.getvalue(), dtype=np.uint8)
-    img = cv2.imdecode(img_data, 1)
+    img = cv2.imdecode(img_data, cv2.IMREAD_COLOR)
     memory_file.close()
 
-    edges = cv2.Canny(img, 100, 200)
+    edges = get_edges(img)
 
     # getting filename to save image as
     img_filename = get_filename(10)
