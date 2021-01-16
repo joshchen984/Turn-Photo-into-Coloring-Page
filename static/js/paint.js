@@ -1,6 +1,7 @@
+
 window.onload = function() {
-    const borderColor = [0,0,0];
     let curColor = [255, 0,0];
+    const borderColor = [0,0,0];
 
     const canv = document.getElementById("myCanvas");
     let ctx = canv.getContext("2d");
@@ -11,11 +12,11 @@ window.onload = function() {
 
     const paintCanvas = document.getElementById('colors');
     let paintCtx = paintCanvas.getContext("2d");
+    paintCanvas.style.width = "300px";
+    paintCanvas.style.height = "100px";
     const rectWidth = 40;
-    drawColorRect(10,10,[255,0,0], paintCtx, borderColor, rectWidth);
-    drawColorRect(rectWidth+20 + 10,10,[0,255,0], paintCtx, borderColor, rectWidth);
-    drawColorRect((rectWidth + 20)*2 + 10,10,[0,0,255], paintCtx, borderColor, rectWidth);
-    drawColorRect((rectWidth + 20)*3 + 10,10,[255,255,255], paintCtx, borderColor, rectWidth);
+
+    drawColorRects(paintCtx, borderColor, rectWidth);
 
     img.onload = function () {
         canv.width = img.width;
@@ -73,8 +74,6 @@ window.onload = function() {
         const startCoords = getMousePos(canv, e);
         const startX = Math.floor(startCoords.x);
         const startY = Math.floor(startCoords.y);
-        console.log(startX);
-        console.log(startY);
         let stack = [[startY, startX]];
         let currPos;
         let newX, newY;
@@ -86,7 +85,6 @@ window.onload = function() {
                 newY = currPos[0] + yDirections[i];
                 newX = currPos[1] + xDirections[i];
                 idx = ((newY * canv.width) + newX)* 4;
-                // console.log(idx);
                 if(idx >=0 && idx < imgData.data.length){
                     //check if pixel color not white or fill color
                     if(!matchColor(imgData.data[idx], imgData.data[idx+1],imgData.data[idx + 2],[0,0,0])){
@@ -130,4 +128,11 @@ function getMousePos(canvas, e) {
       x: e.clientX - rect.left,
       y: e.clientY - rect.top
     };
+}
+
+function drawColorRects(paintCtx, borderColor, rectWidth){
+    drawColorRect(rectWidth/4,10,[255,0,0], paintCtx, borderColor, rectWidth);
+    drawColorRect(rectWidth*1.5 + rectWidth/4,10,[0,255,0], paintCtx, borderColor, rectWidth);
+    drawColorRect((rectWidth * 1.5)*2 + rectWidth/4,10,[0,0,255], paintCtx, borderColor, rectWidth);
+    drawColorRect((rectWidth * 1.5)*3 + rectWidth/4,10,[255,255,255], paintCtx, borderColor, rectWidth);
 }
