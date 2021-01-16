@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 
 {%block body%}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" type = "text/css">
-<div class = 'row'>
+<div class = 'row h-100'>
     <div class = 'col-lg-2'>
         <div class = "row">
             <div class = "col-lg-12">
@@ -11,7 +10,15 @@
         </div>
         <div class = "row">
             <div class = "col-lg-12">
-                <a href = "#" class="btn btn-primary" id="btn-download" download="colored"><i class="fa fa-download"></i> Download</a>
+                <a href = "#" class="btn btn-primary" id="btn-download" download="colored"><i class="fa fa-download"></i> Download Image</a>
+            </div>
+        </div>
+        <div class = "row">
+            <div class = "directions">
+                <h2>Directions</h2>
+                <p>
+                    Select a color and click the area you want to paint. Once you're done coloring the image, click the "download image" button to save as a jpg file.
+                </p>
             </div>
         </div>
     </div>

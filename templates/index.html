@@ -1,16 +1,30 @@
 {% extends "base.html" %}
 
 {%block body%}
-<div class = "row">
+<div class = "row h-100">
     <div class = "col-lg-4">
-        <form action = "/find-edges" method = "POST" enctype = "multipart/form-data" id = "img-upload">
-            <div class = "form-group">
-                <label for = "img-file">Upload Image: </label>
-                <input type = 'file' name = "image" id = "img-file">
+        <div class = "d-flex align-items-center h-100">
+            <div id = "sidebar">
+                <form action = "/find-edges" method = "POST" enctype = "multipart/form-data" id = "img-upload">
+                    <div class = "custom-file">
+                        <label for = "img-file" class = "custom-file-label">Upload Image: </label>
+                        <input type = 'file' name = "image" id = "img-file" class = "custom-file-input" required>
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                </form>
             </div>
-        <button type="submit" class="btn btn-default">Submit</button>
-        </form>
+        </div>
+    </div>
+    <div class = "col-lg-8">
+        <p>hello</p>
     </div>
 
 </div>
+<script>
+$(".custom-file-input").on("change", function() {
+  const fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+</script>
+
 {%endblock%}

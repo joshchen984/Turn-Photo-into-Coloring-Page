@@ -2,8 +2,9 @@
 window.onload = function() {
     let curColor = [255, 0,0];
     const borderColor = [0,0,0];
-
+    let scale;
     const canv = document.getElementById("myCanvas");
+    canv.style.width = (window.innerWidth*0.5).toString().concat("px");
     let ctx = canv.getContext("2d");
     const urlParams = new URLSearchParams(window.location.search);
     const img = new Image();
@@ -21,7 +22,8 @@ window.onload = function() {
     img.onload = function () {
         canv.width = img.width;
         canv.height = img.height;
-
+        scale = parseFloat(canv.style.width.substring(0,canv.style.width.length - 2))/img.width;
+        canv.style.width= (canv.width * scale).toString().concat("px");
         ctx.drawImage(img, 0, 0);
         imgData = ctx.getImageData(0,0,canv.width, canv.height);
         //convert image to be only white and black
@@ -71,7 +73,7 @@ window.onload = function() {
 
         imgData = ctx.getImageData(0,0,canv.width, canv.height);
 
-        const startCoords = getMousePos(canv, e);
+        const startCoords = getMousePos(canv, e, scale);
         const startX = Math.floor(startCoords.x);
         const startY = Math.floor(startCoords.y);
         let stack = [[startY, startX]];
@@ -100,7 +102,7 @@ window.onload = function() {
     }
 
     function switchColor(e){
-        const mousePos = getMousePos(paintCanvas, e);
+        const mousePos = getMousePos(paintCanvas, e, 1);
         const x = mousePos.x;
         const y = mousePos.y;
         const pixel = paintCtx.getImageData(x, y, 1,1).data;
@@ -117,16 +119,16 @@ function drawColorRect(x, y, color, ctx, borderColor, width){
     ctx.fill();
     ctx.rect(x, y, width,width);
     ctx.strokeStyle = `rgb(${borderColor[0]},${borderColor[1]},${borderColor[2]})`;
-    ctx.lineWidth = "6";
+    ctx.lineWidth = "4";
     ctx.stroke();
     ctx.closePath();
 }
 
-function getMousePos(canvas, e) {
+function getMousePos(canvas, e, scale) {
     const rect = canvas.getBoundingClientRect();
     return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
+      x: (e.clientX - rect.left)/scale,
+      y: (e.clientY - rect.top)/scale
     };
 }
 
