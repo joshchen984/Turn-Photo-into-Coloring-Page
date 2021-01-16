@@ -1,8 +1,18 @@
 {% extends "base.html" %}
 
 {%block body%}
-<canvas id = "myCanvas">
-</canvas>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" type = "text/css">
+<div class = 'row'>
+    <div class = 'col-lg-2'>
+        <canvas id = "colors">
+        </canvas>
+        <a href = "#" class="button" id="btn-download">Download</a>
+    </div>
+    <div class = 'col-lg-10'>
+        <canvas id = "myCanvas">
+        </canvas>
+    </div>
 
+</div>
 <script src = "{{url_for('static', filename = 'js/paint.js')}}"></script>
 {%endblock%}

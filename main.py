@@ -26,6 +26,11 @@ def home():
 
 
 def get_edges(img):
+    """
+    Takes in image and returns image of edges.
+    :param img: np array of image
+    :return: np array of edges
+    """
     blur = cv2.bilateralFilter(img, 9, 100, 100)
     img_gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
 
