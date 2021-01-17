@@ -82,7 +82,6 @@ window.onload = function() {
         let idx;
         while(stack.length > 0){
             currPos = stack.pop();
-            colorPixel((currPos[0] * canv.width + currPos[1])* 4, curColor[0],curColor[1],curColor[2]);
             for(let i = 0; i < 4;i++){
                 newY = currPos[0] + yDirections[i];
                 newX = currPos[1] + xDirections[i];
@@ -92,6 +91,7 @@ window.onload = function() {
                     if(!matchColor(imgData.data[idx], imgData.data[idx+1],imgData.data[idx + 2],[0,0,0])){
                         if(!matchColor(imgData.data[idx], imgData.data[idx+1], imgData.data[idx+2], curColor)){
                             stack.push([newY, newX]);
+                            colorPixel((newY * canv.width + newX)* 4, curColor[0],curColor[1],curColor[2]);
                         }
 
                     }
