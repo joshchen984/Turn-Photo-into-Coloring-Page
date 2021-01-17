@@ -1,11 +1,27 @@
 {% extends "base.html" %}
+{%block head%}
+<script src = "{{url_for('static', filename = 'js/selectOption.js')}}"></script>
+
+{%endblock%}
 
 {%block body%}
 <div class = 'row h-100'>
     <div class = 'col-lg-2'>
         <div class = "row">
             <div class = "col-lg-12">
-                <canvas id = "colors" width="300" height="100"></canvas>
+                <canvas id = "colors" width="300" height="150"></canvas>
+            </div>
+        </div>
+        <div class = "row">
+            <div class = "col-lg-12">
+                <div class = "icons">
+                    <input type = 'radio' name="icons" id="brush" onclick="selectOption('brush')" checked>
+                    <label for = "brush" id="brush-label"><i class="fas fa-paint-brush"></i></label>
+                    <input type = 'radio' name="icons" id="pen" onclick="selectOption('pen')">
+                    <label for ='pen' id="pen-label"><i class="fas fa-pen"></i></label>
+                    <input type = 'radio' name="icons" id="bucket" onclick="selectOption('bucket')">
+                    <label for ='bucket' id="bucket-label"><i class="fas fa-fill"></i></label>
+                </div>
             </div>
         </div>
         <div class = "row">
@@ -13,6 +29,7 @@
                 <a href = "#" class="btn btn-primary" id="btn-download" download="colored"><i class="fa fa-download"></i> Download Image</a>
             </div>
         </div>
+
         <div class = "row">
             <div class = "directions">
                 <h2>Directions</h2>
@@ -27,6 +44,6 @@
         </canvas>
     </div>
 </div>
-<script src = "{{url_for('static', filename = 'js/paint.js')}}"></script>
 <script src = "{{url_for('static', filename = 'js/download.js')}}"></script>
+<script src = "{{url_for('static', filename = 'js/paint.js')}}"></script>
 {%endblock%}

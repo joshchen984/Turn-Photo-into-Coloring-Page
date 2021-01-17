@@ -24,10 +24,27 @@ canvas{
 }
 .directions{
     margin-top:30px;
+    padding:10px;
 }
 .directions p{
     font-size:20px;
 }
 h2{
     text-align:center;
+}
+#brush:checked ~#brush-label> i{
+    color:red;
+}
+#pen:checked ~#pen-label> i{
+    color:red;
+}
+#bucket:checked ~#bucket-label> i{
+    color:red;
+}
+
+.icons input[type=radio]{
+    display:none;
+}
+.icons label{
+    font-size:40px;
 }

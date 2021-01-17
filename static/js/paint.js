@@ -1,8 +1,9 @@
-
-window.onload = function() {
+let drawing = false;
+$(document).ready(function(){
     let curColor = [255, 0,0];
     const borderColor = [0,0,0];
     let scale;
+    //canvas
     const canv = document.getElementById("myCanvas");
     canv.style.width = (window.innerWidth*0.5).toString().concat("px");
     let ctx = canv.getContext("2d");
@@ -11,13 +12,16 @@ window.onload = function() {
     img.src = "/static/coloring-pages/" + urlParams.get('img') + '.jpg';
     let imgData;
 
+    //paint canvas
     const paintCanvas = document.getElementById('colors');
     let paintCtx = paintCanvas.getContext("2d");
     paintCanvas.style.width = "300px";
-    paintCanvas.style.height = "100px";
+    paintCanvas.style.height = "150px";
     const rectWidth = 40;
 
     drawColorRects(paintCtx, borderColor, rectWidth);
+
+
 
     img.onload = function () {
         canv.width = img.width;
@@ -40,8 +44,31 @@ window.onload = function() {
             imgData.data[i+3] = 255;
         }
         ctx.putImageData(imgData, 0,0);
-        canv.addEventListener('mousedown', floodfill);
+        canv.addEventListener('mousedown', function(e){
+            if(selected=='brush'){
+                drawing=true;
+                ctx.beginPath();
+                brushDraw(e);
+            }else if(selected=='pen') {
+                drawing=false;
+                penDraw(e);
+            }else if(selected=='bucket'){
+                floodfill(e);
+            }
+        });
+        canv.addEventListener('mouseup', function(e){
+            drawing = false;
+            if(selected == 'brush') {
+                ctx.beginPath();
+            }
+        });
+        canv.addEventListener('mousemove', brushDraw);
         paintCanvas.addEventListener('mousedown', switchColor);
+
+        $('input[type=radio][name=icons]').change(function(){
+            ctx.beginPath();
+            drawing=false;
+        })
     }
     /**
      * Checks if color matches another color.
@@ -111,7 +138,27 @@ window.onload = function() {
         }
     }
 
-}
+    function brushDraw(e){
+        if(!drawing){return;}
+
+        ctx.lineWidth=4;
+        ctx.strokeStyle = "black";
+        ctx.lineCap = "round";
+        const currPos = getMousePos(canv, e, scale);
+        ctx.lineTo(currPos.x, currPos.y);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(currPos.x, currPos.y);
+    }
+
+    function penDraw(e){
+        ctx.lineWidth=4;
+        ctx.strokeStyle = "black";
+        const currPos = getMousePos(canv, e, scale);
+        ctx.lineTo(currPos.x, currPos.y);
+        ctx.stroke();
+    }
+});
 function drawColorRect(x, y, color, ctx, borderColor, width){
     ctx.beginPath();
     ctx.rect(x, y, width,width);
@@ -130,11 +177,17 @@ function getMousePos(canvas, e, scale) {
       x: (e.clientX - rect.left)/scale,
       y: (e.clientY - rect.top)/scale
     };
+
 }
 
 function drawColorRects(paintCtx, borderColor, rectWidth){
-    drawColorRect(rectWidth/4,10,[255,0,0], paintCtx, borderColor, rectWidth);
-    drawColorRect(rectWidth*1.5 + rectWidth/4,10,[0,255,0], paintCtx, borderColor, rectWidth);
-    drawColorRect((rectWidth * 1.5)*2 + rectWidth/4,10,[0,0,255], paintCtx, borderColor, rectWidth);
-    drawColorRect((rectWidth * 1.5)*3 + rectWidth/4,10,[255,255,255], paintCtx, borderColor, rectWidth);
+    drawColorRect(rectWidth/4,rectWidth/4,[255,0,0], paintCtx, borderColor, rectWidth);//red
+    drawColorRect(rectWidth*1.5 + rectWidth/4,rectWidth/4,[0,255,0], paintCtx, borderColor, rectWidth);//green
+    drawColorRect((rectWidth * 1.5)*2 + rectWidth/4,rectWidth/4,[0,0,255], paintCtx, borderColor, rectWidth);//blue
+    drawColorRect((rectWidth * 1.5)*3 + rectWidth/4,rectWidth/4,[255,255,255], paintCtx, borderColor, rectWidth); //white
+    drawColorRect(rectWidth/4,rectWidth*1.5 + rectWidth/4,[255,165,0], paintCtx, borderColor, rectWidth); //orange
+    drawColorRect(rectWidth*1.5 + rectWidth/4,rectWidth*1.5 + rectWidth/4,[255,255,0], paintCtx, borderColor, rectWidth);//yellow
+    drawColorRect((rectWidth * 1.5)*2 + rectWidth/4,rectWidth*1.5 + rectWidth/4,[64,224,208], paintCtx, borderColor, rectWidth);//turquoise
+    drawColorRect((rectWidth * 1.5)*3 + rectWidth/4,rectWidth*1.5 + rectWidth/4,[139,69,19], paintCtx, borderColor, rectWidth);//brown
 }
+
