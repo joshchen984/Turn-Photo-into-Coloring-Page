@@ -7,6 +7,7 @@ $(document).ready(function(){
     const canv = document.getElementById("myCanvas");
     canv.style.width = (window.innerWidth*0.5).toString().concat("px");
     let ctx = canv.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
     const urlParams = new URLSearchParams(window.location.search);
     const img = new Image();
     img.src = "/static/coloring-pages/" + urlParams.get('img') + '.jpg';
@@ -43,24 +44,21 @@ $(document).ready(function(){
             }
             imgData.data[i+3] = 255;
         }
+
         ctx.putImageData(imgData, 0,0);
         canv.addEventListener('mousedown', function(e){
-            if(selected=='brush'){
+            if(selected==='brush'){
                 drawing=true;
-                ctx.beginPath();
                 brushDraw(e);
-            }else if(selected=='pen') {
+            }else if(selected==='pen') {
                 drawing=false;
                 penDraw(e);
-            }else if(selected=='bucket'){
+            }else if(selected==='bucket'){
                 floodfill(e);
             }
         });
         canv.addEventListener('mouseup', function(e){
             drawing = false;
-            if(selected == 'brush') {
-                ctx.beginPath();
-            }
         });
         canv.addEventListener('mousemove', brushDraw);
         paintCanvas.addEventListener('mousedown', switchColor);
@@ -79,11 +77,11 @@ $(document).ready(function(){
      * @returns {boolean}
      */
     function matchColor(r, g, b, color){
-        return r == color[0] && g == color[1] && b == color[2];
+        return r === color[0] && g === color[1] && b === color[2];
 
     }
 
-    function colorPixel(pixelPos,r, g, b){
+    function colorPixel(pixelPos,r, g, b, imgData){
         imgData.data[pixelPos] = r;
         imgData.data[pixelPos+1] = g;
         imgData.data[pixelPos+2] = b;
@@ -103,24 +101,32 @@ $(document).ready(function(){
         const startCoords = getMousePos(canv, e, scale);
         const startX = Math.floor(startCoords.x);
         const startY = Math.floor(startCoords.y);
+        let idx = ((startY * canv.width) + startX)* 4;
+        let startColor;
+
+        if(!matchColor(imgData.data[idx], imgData.data[idx+1],imgData.data[idx + 2],[0,0,0])){
+            startColor = [imgData.data[idx], imgData.data[idx+1],imgData.data[idx + 2]];
+        }else{
+            return;
+        }
+        if(arrayEquals(startColor,curColor)){
+            return;
+        }
+
         let stack = [[startY, startX]];
         let currPos;
         let newX, newY;
-        let idx;
         while(stack.length > 0){
             currPos = stack.pop();
             for(let i = 0; i < 4;i++){
                 newY = currPos[0] + yDirections[i];
                 newX = currPos[1] + xDirections[i];
                 idx = ((newY * canv.width) + newX)* 4;
-                if(idx >=0 && idx < imgData.data.length){
-                    //check if pixel color not white or fill color
-                    if(!matchColor(imgData.data[idx], imgData.data[idx+1],imgData.data[idx + 2],[0,0,0])){
-                        if(!matchColor(imgData.data[idx], imgData.data[idx+1], imgData.data[idx+2], curColor)){
-                            stack.push([newY, newX]);
-                            colorPixel((newY * canv.width + newX)* 4, curColor[0],curColor[1],curColor[2]);
-                        }
-
+                if(coordsValid(newX, newY, canv)){
+                    //check if pixel color is same as starting color
+                    if(matchColor(imgData.data[idx], imgData.data[idx+1],imgData.data[idx + 2],startColor)){
+                        stack.push([newY, newX]);
+                        colorPixel((newY * canv.width + newX)* 4, curColor[0],curColor[1],curColor[2], imgData);
                     }
                 }
             }
@@ -132,25 +138,80 @@ $(document).ready(function(){
         const mousePos = getMousePos(paintCanvas, e, 1);
         const x = mousePos.x;
         const y = mousePos.y;
+        console.log(curColor);
         const pixel = paintCtx.getImageData(x, y, 1,1).data;
         if(!matchColor(pixel[0], pixel[1], pixel[2], [0,0,0])){
-            curColor = pixel.slice(0,4);
+            curColor = pixel.slice(0,3);
+
         }
     }
-
     function brushDraw(e){
         if(!drawing){return;}
+        imgData = ctx.getImageData(0,0,canv.width, canv.height);
 
-        ctx.lineWidth=4;
-        ctx.strokeStyle = "black";
-        ctx.lineCap = "round";
-        const currPos = getMousePos(canv, e, scale);
-        ctx.lineTo(currPos.x, currPos.y);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(currPos.x, currPos.y);
+        const startCoords = getMousePos(canv, e, scale);
+        const startX = Math.floor(startCoords.x);
+        const startY = Math.floor(startCoords.y);
+        let idx = ((startY * canv.width) + startX)* 4;
+        let startColor;
+        if(!matchColor(imgData.data[idx], imgData.data[idx+1],imgData.data[idx + 2],[0,0,0])){
+            startColor = [imgData.data[idx], imgData.data[idx+1],imgData.data[idx + 2]];
+        }else{
+            return;
+        }
+        colorPixel((startY * canv.width + startX)* 4, curColor[0],curColor[1],curColor[2], imgData);
+        drawSquare(brushSize, startX, startY, startColor);
+        ctx.putImageData(imgData, 0,0);
     }
 
+    function drawSquare(width, startX, startY, startColor){
+        let idx = ((startY * canv.width) + startX)* 4;
+        if(width === 3){
+            const xDirections = [0,0,1,-1, 1, 1,-1,-1];
+            const yDirections = [1,-1,0,0, 1, -1,1,-1];
+            if(coordsValid(startX, startY, canv)) {
+                if (matchColor(imgData.data[idx], imgData.data[idx + 1], imgData.data[idx + 2], startColor)) {
+                    colorPixel((startY * canv.width + startX) * 4, curColor[0], curColor[1], curColor[2], imgData);
+                }
+            }
+
+            let newY, newX;
+            for(let i = 0; i < 8;i++){
+
+                newY = startY + yDirections[i];
+                newX = startX + xDirections[i];
+                idx = ((newY * canv.width) + newX)* 4;
+                if(coordsValid(newX, newY, canv)){
+                    //check if pixel color is start color
+                    if(matchColor(imgData.data[idx], imgData.data[idx+1],imgData.data[idx + 2],startColor)){
+                        colorPixel((newY * canv.width + newX)* 4, curColor[0],curColor[1],curColor[2], imgData);
+                    }
+                }
+            }
+            return;
+        }
+        for(let i = startX-Math.floor(width/2);i <= Math.floor(startX+width/2);i++){
+            if(coordsValid(i, startY, canv)){
+                idx = ((startY * canv.width) + i)* 4;
+                if(matchColor(imgData.data[idx], imgData.data[idx+1],imgData.data[idx + 2],startColor)){
+                    colorPixel(idx, curColor[0],curColor[1],curColor[2], imgData);
+                }
+            }
+
+        }
+        for(let i = startY-Math.floor(width/2);i <= Math.floor(startY+width/2);i++){
+            if(coordsValid(startX, i, canv)) {
+                idx = ((i * canv.width) + startX) * 4;
+                if (matchColor(imgData.data[idx], imgData.data[idx + 1], imgData.data[idx + 2], startColor)) {
+                    colorPixel(idx, curColor[0], curColor[1], curColor[2], imgData);
+                }
+            }
+        }
+        drawSquare((width-1)/2, startX + Math.ceil(width/4), startY + Math.ceil(width/4), startColor);
+        drawSquare((width-1)/2, Math.ceil(startX + width/4), startY - Math.ceil(width/4), startColor);
+        drawSquare((width-1)/2, startX - Math.ceil(width/4), startY + Math.ceil(width/4), startColor);
+        drawSquare((width-1)/2, startX - Math.ceil(width/4), startY - Math.ceil(width/4), startColor);
+    }
     function penDraw(e){
         ctx.lineWidth=4;
         ctx.strokeStyle = "black";
@@ -159,13 +220,15 @@ $(document).ready(function(){
         ctx.stroke();
     }
 });
+
+
 function drawColorRect(x, y, color, ctx, borderColor, width){
     ctx.beginPath();
     ctx.rect(x, y, width,width);
-    ctx.fillStyle = `rgb(${color[0]},${color[1]},${color[2]})`;
+    ctx.fillStyle = convertRgb(color)
     ctx.fill();
     ctx.rect(x, y, width,width);
-    ctx.strokeStyle = `rgb(${borderColor[0]},${borderColor[1]},${borderColor[2]})`;
+    ctx.strokeStyle = convertRgb(borderColor);
     ctx.lineWidth = "4";
     ctx.stroke();
     ctx.closePath();
@@ -191,3 +254,32 @@ function drawColorRects(paintCtx, borderColor, rectWidth){
     drawColorRect((rectWidth * 1.5)*3 + rectWidth/4,rectWidth*1.5 + rectWidth/4,[139,69,19], paintCtx, borderColor, rectWidth);//brown
 }
 
+/**
+ * Converts size 3 array into string formatted for rgb
+ * @param color - array with rgb value
+ * @returns {string} - array formatted to rgb
+ */
+function convertRgb(color){
+    return `rgb(${color[0]},${color[1]},${color[2]})`;
+}
+
+function arrayEquals(a, b){
+    if(a.length !== b.length){
+        return false;
+    }
+    for(let i = 0; i < a.length;i++){
+        if(b[i] !== a[i]){
+            return false;
+        }
+    }
+    return true;
+}
+
+function coordsValid(x, y, canvas){
+    if(x>=0 && x < canvas.width){
+        if(y>=0 && y < canvas.height){
+            return true;
+        }
+    }
+    return false;
+}
