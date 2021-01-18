@@ -7,11 +7,17 @@
 {%block body%}
 <div class = 'row h-100'>
     <div class = 'col-lg-2'>
-        <div class = "row">
-            <div class = "col-lg-12">
-                <canvas id = "colors" width="300" height="150"></canvas>
-            </div>
-        </div>
+        <svg width="240" height="150" class = "colors">
+            <rect x="5"y="10" fill="rgb(255,0,0)" onclick="selectColor([255,0,0])"/>
+            <rect x="50"y="10" fill="rgb(0,255,0)"onclick="selectColor([0,255,0])"/>
+            <rect x="95"y="10" fill="rgb(0,0,255)"onclick="selectColor([0,0,255])"/>
+            <rect x="140"y="10" fill="rgb(255,255,255)"onclick="selectColor([255,255,255])"/>
+            <rect x="5"y="55" fill="rgb(255,165,0)"onclick="selectColor([255,165,0])"/>
+            <rect x="50"y="55" fill="rgb(255,255,0)"onclick="selectColor([255,255,0])"/>
+            <rect x="95"y="55" fill="rgb(64,224,208)"onclick="selectColor([64,224,208])"/>
+            <rect x="140"y="55" fill="rgb(139,69,19)"onclick="selectColor([139,69,19])"/>
+        </svg>
+
         <div class = "row">
             <div class = "col-lg-12">
                 <div class = "icons">

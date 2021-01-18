@@ -41,7 +41,6 @@ h2{
 #bucket:checked ~#bucket-label> i{
     color:red;
 }
-
 .icons input[type=radio]{
     display:none;
 }
@@ -50,4 +49,10 @@ h2{
 }
 #brush-size{
     width:100%;
+}
+.colors rect{
+    width:35px;
+    height:35px;
+    stroke-width:4px;
+    stroke:black;
 }
