@@ -1,9 +1,17 @@
 {% extends "base.html" %}
 
 {%block body%}
+<div class = "row">
+    <div class ="col-lg-12">
+        <div class = "page-header">
+            <h1 class = "title-text">ColorMyPhoto</h1>
+            <p class="tagline">Transform Your Photo into a Digital Coloring Page</p>
+        </div>
+    </div>
+</div>
 <div class = "row h-100">
-    <div class = "col-lg-4">
-        <div class = "d-flex align-items-center h-100">
+    <div class = "col-lg-12">
+        <div class = "d-flex h-100 justify-content-center">
             <div id = "sidebar">
                 <form action = "/find-edges" method = "POST" enctype = "multipart/form-data" id = "img-upload">
                     <div class = "custom-file">
@@ -15,9 +23,6 @@
             </div>
         </div>
     </div>
-    <div class = "col-lg-8">
-    </div>
-
 </div>
 <script>
 $(".custom-file-input").on("change", function() {

@@ -14,9 +14,7 @@ canvas{
     margin-top:10px;
 }
 #sidebar{
-    margin-top:50px;
     margin-left:10px;
-    margin-bottom:0px;
     padding:20px;
     height:50%;
     border-radius:10px;
@@ -29,7 +27,7 @@ canvas{
 .directions p{
     font-size:20px;
 }
-h2{
+h2, h1{
     text-align:center;
 }
 #brush:checked ~#brush-label> i{
@@ -55,4 +53,14 @@ h2{
     height:35px;
     stroke-width:4px;
     stroke:black;
+    rx:5px;
+}
+.title-text{
+    font-size:8em;
+    background-image: linear-gradient(to right, violet, indigo, blue, green, yellow, orange, red);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.tagline{
+    text-align:center;
 }
