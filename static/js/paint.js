@@ -3,7 +3,6 @@ $(document).ready(function(){
     let scale;
     //canvas
     const canv = document.getElementById("myCanvas");
-    canv.style.width = (window.innerWidth*0.5).toString().concat("px");
     let ctx = canv.getContext("2d");
     ctx.imageSmoothingEnabled = false;
     const urlParams = new URLSearchParams(window.location.search);
@@ -11,15 +10,13 @@ $(document).ready(function(){
     img.src = "/static/coloring-pages/" + urlParams.get('img') + '.jpg';
     let imgData;
 
-
     img.onload = function () {
         canv.width = img.width;
         canv.height = img.height;
-        scale = parseFloat(canv.style.width.substring(0,canv.style.width.length - 2))/img.width;
-        canv.style.width= (canv.width * scale).toString().concat("px");
+        scale = canv.clientWidth/img.width;
         ctx.drawImage(img, 0, 0);
         imgData = ctx.getImageData(0,0,canv.width, canv.height);
-        //convert image to be only white and black
+        //convert image to be only white and bconslack
         for (let i = 0; i < imgData.data.length;i+=4){
             if(imgData.data[i] > 100){
                 imgData.data[i] = 0;
@@ -132,7 +129,6 @@ $(document).ready(function(){
         if(matchColor(imgData.data[idx], imgData.data[idx+1],imgData.data[idx + 2],[0,0,0])){
             return;
         }
-
         colorPixel((startY * canv.width + startX)* 4, curColor[0],curColor[1],curColor[2], imgData);
         drawSquare(brushSize, startX, startY);
         ctx.putImageData(imgData, 0,0);

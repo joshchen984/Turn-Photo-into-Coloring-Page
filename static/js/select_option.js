@@ -5,5 +5,7 @@ function selectOption(value){
     selected = value;
 }
 function selectColor(color){
-    curColor = color;
+    //turn rgb string into array
+    const rgb = color.match(/\d+/g);
+    curColor = rgb;
 }

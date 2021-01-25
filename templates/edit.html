@@ -1,22 +1,24 @@
 {% extends "base.html" %}
 {%block head%}
 <script src = "{{url_for('static', filename = 'js/select_option.js')}}"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
 {%endblock%}
 
 {%block body%}
 <div class = 'row h-100'>
     <div class = 'col-lg-2'>
-        <svg width="200" height="120" class = "colors">
-            <rect x="5"y="10" fill="rgb(255,0,0)" onclick="selectColor([255,0,0])"/>
-            <rect x="50"y="10" fill="rgb(0,255,0)"onclick="selectColor([0,255,0])"/>
-            <rect x="95"y="10" fill="rgb(0,0,255)"onclick="selectColor([0,0,255])"/>
-            <rect x="140"y="10" fill="rgb(255,255,255)"onclick="selectColor([255,255,255])"/>
-            <rect x="5"y="55" fill="rgb(255,165,0)"onclick="selectColor([255,165,0])"/>
-            <rect x="50"y="55" fill="rgb(255,255,0)"onclick="selectColor([255,255,0])"/>
-            <rect x="95"y="55" fill="rgb(64,224,208)"onclick="selectColor([64,224,208])"/>
-            <rect x="140"y="55" fill="rgb(139,69,19)"onclick="selectColor([139,69,19])"/>
+        <svg width="200" height="160" class = "colors">
+            <rect x="5"y="10" style="fill:rgb(255,0,0)" onclick="selectColor(this.style.fill)"/>
+            <rect x="50"y="10" style="fill:rgb(0,255,0)"onclick="selectColor(this.style.fill)"/>
+            <rect x="95"y="10" style="fill:rgb(0,0,255)"onclick="selectColor(this.style.fill)"/>
+            <rect x="140"y="10" style="fill:rgb(255,255,255)"onclick="selectColor(this.style.fill)"/>
+            <rect x="5"y="55" style="fill:rgb(255,165,0)"onclick="selectColor(this.style.fill)"/>
+            <rect x="50"y="55" style="fill:rgb(255,255,0)"onclick="selectColor(this.style.fill)"/>
+            <rect x="95"y="55" style="fill:rgb(64,224,208)"onclick="selectColor(this.style.fill)"/>
+            <rect x="140"y="55" style="fill:rgb(139,69,19)"onclick="selectColor(this.style.fill)"/>
+            <rect id="custom-color" x = "5" y = "100" onclick="selectColor(this.style.fill)"></rect>
         </svg>
+        <div id = "picker"></div>
 
         <div class = "row">
             <div class = "col-lg-12">
@@ -42,6 +44,13 @@
             </div>
         </div>
 
+
+    </div>
+    <div class = 'col-lg-8'>
+        <canvas id = "myCanvas">
+        </canvas>
+    </div>
+    <div class = 'col-lg-2'>
         <div class = "row">
             <div class = "directions">
                 <h2>Directions</h2>
@@ -50,10 +59,6 @@
                 </p>
             </div>
         </div>
-    </div>
-    <div class = 'col-lg-10'>
-        <canvas id = "myCanvas">
-        </canvas>
     </div>
 </div>
 <script src = "{{url_for('static', filename = 'js/download.js')}}"></script>

@@ -21,8 +21,21 @@ $(document).ready(function(){
     });
     $("#brush-size").change(function(){
     slider = document.getElementById("brush-size");
-    brushSize = getBrushSize(slider.value);
-    console.log(slider.value);
-    console.log(brushSize);
+    brushSize = getBrushSize(slider.value)
+    });
+
+let colorPicker = new iro.ColorPicker('#picker', {
+    width:100
 });
+
+    colorPicker.on('color:change',function(color){
+        let customColorBox = document.getElementById('custom-color');
+        let hsv = color.hsv;
+        if(hsv.v < 20){
+            console.log(hsv.v);
+            hsv.v = 20;
+        }
+        color.set(hsv);
+        customColorBox.style.fill = colorPicker.color.rgbString;
+    });
 });
