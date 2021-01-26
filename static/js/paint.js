@@ -16,7 +16,7 @@ $(document).ready(function(){
         scale = canv.clientWidth/img.width;
         ctx.drawImage(img, 0, 0);
         imgData = ctx.getImageData(0,0,canv.width, canv.height);
-        //convert image to be only white and bconslack
+        //convert image to be only white and black
         for (let i = 0; i < imgData.data.length;i+=4){
             if(imgData.data[i] > 100){
                 imgData.data[i] = 0;

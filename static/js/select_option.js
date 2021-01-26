@@ -6,6 +6,6 @@ function selectOption(value){
 }
 function selectColor(color){
     //turn rgb string into array
-    const rgb = color.match(/\d+/g);
+    const rgb = color.match(/\d+/g).map(parseFloat);
     curColor = rgb;
 }

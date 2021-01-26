@@ -32,7 +32,6 @@ let colorPicker = new iro.ColorPicker('#picker', {
         let customColorBox = document.getElementById('custom-color');
         let hsv = color.hsv;
         if(hsv.v < 20){
-            console.log(hsv.v);
             hsv.v = 20;
         }
         color.set(hsv);
