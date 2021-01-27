@@ -6,6 +6,8 @@ import os
 import io
 import numpy as np
 from config import Config, ProdConfig
+from werkzeug.utils import secure_filename
+import imghdr
 
 app = Flask(__name__)
 app.config.from_object(Config())
@@ -21,13 +23,6 @@ def get_filename(length):
     chars = string.ascii_letters
     filename = ''.join([random.choice(chars) for _ in range(length)])
     return filename
-
-
-def allowed_file(filename):
-    _, ext = os.path.splitext(filename)
-    if ext in ALLOWED_EXTENSIONS:
-        return True
-    return False
 
 
 @app.route('/')
@@ -50,10 +45,27 @@ def get_edges(img):
     return edges
 
 
+def validate_image(stream):
+    """
+    Returns file type of file
+    :param stream: file stream to read
+    :return: file extension
+    """
+    header = stream.read(512)  # 512 bytes should be enough for a header check
+    stream.seek(0)  # reset stream pointer
+    format = imghdr.what(None, header)
+    if not format:
+        return None
+    return '.' + (format if format != 'jpeg' else 'jpg')
+
+
 @app.route('/find-edges', methods=["POST"])
 def find_edges():
     img_file = request.files['image']
-    if not allowed_file(img_file.filename):
+    filename = secure_filename(img_file.filename)
+    ext = os.path.splitext(filename)[1]
+
+    if ext not in ALLOWED_EXTENSIONS or ext != validate_image(img_file.stream):
         return redirect(url_for('index'))
 
     memory_file = io.BytesIO()

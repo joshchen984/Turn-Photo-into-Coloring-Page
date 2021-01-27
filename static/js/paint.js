@@ -5,6 +5,15 @@ $(document).ready(function(){
     const canv = document.getElementById("myCanvas");
     let ctx = canv.getContext("2d");
     ctx.imageSmoothingEnabled = false;
+
+    let history = new History();
+    $('#undo').on('click', function(){
+        history.undo(canv, ctx);
+    });
+    $('#redo').on('click', function(){
+       history.redo(canv, ctx);
+    });
+
     const urlParams = new URLSearchParams(window.location.search);
     const img = new Image();
     img.src = "/static/coloring-pages/" + urlParams.get('img') + '.jpg';
@@ -32,12 +41,10 @@ $(document).ready(function(){
 
         ctx.putImageData(imgData, 0,0);
         canv.addEventListener('mousedown', function(e){
+            history.saveState(canv);
             if(selected==='brush'){
                 drawing=true;
                 brushDraw(e);
-            }else if(selected==='pen') {
-                drawing=false;
-                penDraw(e);
             }else if(selected==='bucket'){
                 floodfill(e);
             }
@@ -181,13 +188,6 @@ $(document).ready(function(){
         drawSquare((width-1)/2, Math.ceil(startX + width/4), startY - Math.ceil(width/4));
         drawSquare((width-1)/2, startX - Math.ceil(width/4), startY + Math.ceil(width/4));
         drawSquare((width-1)/2, startX - Math.ceil(width/4), startY - Math.ceil(width/4));
-    }
-    function penDraw(e){
-        ctx.lineWidth=4;
-        ctx.strokeStyle = "black";
-        const currPos = getMousePos(canv, e, scale);
-        ctx.lineTo(currPos.x, currPos.y);
-        ctx.stroke();
     }
 });
 

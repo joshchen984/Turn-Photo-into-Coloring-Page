@@ -6,7 +6,7 @@
 
 {%block body%}
 <div class = 'row h-100'>
-    <div class = 'col-lg-2'>
+    <div class = 'col-lg-4'>
         <svg width="200" height="160" class = "colors">
             <rect x="5" y="10" style="fill:rgb(255,0,0)" onclick="selectColor(this.style.fill)"/>
             <rect x="50" y="10" style="fill:rgb(0,255,0)"onclick="selectColor(this.style.fill)"/>
@@ -25,12 +25,14 @@
                 <div class = "icons">
                     <input type = 'radio' name="icons" id="brush" onclick="selectOption('brush')" checked>
                     <label for = "brush" id="brush-label"><i class="fas fa-paint-brush"></i></label>
-                    <input type = 'radio' name="icons" id="pen" onclick="selectOption('pen')">
-                    <label for ='pen' id="pen-label"><i class="fas fa-pen"></i></label>
                     <input type = 'radio' name="icons" id="bucket" onclick="selectOption('bucket')">
                     <label for ='bucket' id="bucket-label"><i class="fas fa-fill"></i></label>
+                    <button id = 'undo'><i class="fas fa-undo"></i></button>
+                    <button id = 'redo'><i class="fas fa-redo"></i></button>
                 </div>
             </div>
+
+
         </div>
         <div class = "row">
             <div class = "col-lg-12">
@@ -43,24 +45,13 @@
                 <a href = "#" class="btn btn-primary" id="btn-download" download="colored"><i class="fa fa-download"></i> Download Image</a>
             </div>
         </div>
-
-
     </div>
     <div class = 'col-lg-8'>
         <canvas id = "myCanvas">
         </canvas>
     </div>
-    <div class = 'col-lg-2'>
-        <div class = "row">
-            <div class = "directions">
-                <h2>Directions</h2>
-                <p>
-                    Select a color and click the area you want to paint. Once you're done coloring the image, click the "download image" button to save as a jpg file.
-                </p>
-            </div>
-        </div>
-    </div>
 </div>
+<script src = "{{url_for('static', filename = 'js/history.js')}}"></script>
 <script src = "{{url_for('static', filename = 'js/download.js')}}"></script>
 <script src = "{{url_for('static', filename = 'js/paint.js')}}"></script>
 <script src = "{{url_for('static', filename = 'js/slider.js')}}"></script>

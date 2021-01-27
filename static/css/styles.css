@@ -21,29 +21,21 @@ canvas{
     border-radius:10px;
     background-color: #C5CBE3;
 }
-.directions{
-    margin-top:30px;
-    padding:10px;
-}
-.directions p{
-    font-size:20px;
-}
+
 h2, h1{
     text-align:center;
 }
 #brush:checked ~#brush-label> i{
     color:red;
 }
-#pen:checked ~#pen-label> i{
-    color:red;
-}
+
 #bucket:checked ~#bucket-label> i{
     color:red;
 }
 .icons input[type=radio]{
     display:none;
 }
-.icons label{
+.icons label, button{
     font-size:40px;
 }
 #brush-size{
@@ -64,4 +56,10 @@ h2, h1{
 }
 .tagline{
     text-align:center;
+}
+#undo, #redo{
+    background-color: Transparent;
+    outline: none;
+    border: none;
+
 }
