@@ -5,8 +5,11 @@ import random
 import os
 import io
 import numpy as np
+from config import Config, ProdConfig
 
 app = Flask(__name__)
+app.config.from_object(Config())
+ALLOWED_EXTENSIONS = {'.jpg', '.png'}
 
 
 def get_filename(length):
@@ -20,8 +23,15 @@ def get_filename(length):
     return filename
 
 
+def allowed_file(filename):
+    _, ext = os.path.splitext(filename)
+    if ext in ALLOWED_EXTENSIONS:
+        return True
+    return False
+
+
 @app.route('/')
-def home():
+def index():
     return render_template('index.html')
 
 
@@ -43,6 +53,9 @@ def get_edges(img):
 @app.route('/find-edges', methods=["POST"])
 def find_edges():
     img_file = request.files['image']
+    if not allowed_file(img_file.filename):
+        return redirect(url_for('index'))
+
     memory_file = io.BytesIO()
     img_file.save(memory_file)
     img_data = np.frombuffer(memory_file.getvalue(), dtype=np.uint8)
