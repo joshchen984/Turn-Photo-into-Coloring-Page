@@ -2,3 +2,4 @@ venv
 .idea
 static/coloring-pages/
 .env
+__pycache__
